@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router";
-import './test.js'
 import Dashboard from "../../screens/dashboard/index.jsx";
-function Content() {
+import Beneficiaire from "../../screens/Beneficiaires/index.jsx";
+
+export default function Content() {
   return (
     <Routes>
-        <Route path="/dash" Component={Dashboard}></Route>
+        <Route path="/" Component={Dashboard} exact></Route>
+        <Route path="/beneficiaires" Component={Beneficiaire}></Route>
     </Routes>
   );
 }
-
-export default Content;
