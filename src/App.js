@@ -28,6 +28,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <div className="App">
         <SideBar/>
+        
       </div>
     </ThemeProvider>
   );
