@@ -1,9 +1,10 @@
-import { CenterFocusStrong, Directions, Equalizer, Logout, Person2 } from "@mui/icons-material";
+import { CenterFocusStrong, Directions, Logout, Person2 } from "@mui/icons-material";
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HelpIcon from '@mui/icons-material/Help';
 import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';    
+import Forfait from "../../screens/Forfait";
 
 export const mainMenuData = [
     {
@@ -11,6 +12,8 @@ export const mainMenuData = [
         icon: <DashboardRoundedIcon/>,
         path: '/'
     },
+
+
     {
         title: 'Beneficiaire',
         icon: <Person2/>,
@@ -21,10 +24,11 @@ export const mainMenuData = [
         icon: <CenterFocusStrong/>,
         path: '/centreCouts'
     },
+   
     {
-        title: 'Directions',
+        title: 'forfait',
         icon: <Directions/>,
-        path: '/directions'
+        path: '/forfaits'
     },
 ]
 

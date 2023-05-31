@@ -21,7 +21,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { Container, Menu, Avatar, MenuItem, Badge, Tooltip } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import {drawerWidth} from '../../constants'
-import Content from '../Content/index.jsx'
+import Content from '../Routes/index.jsx'
 import { Image } from 'mui-image'
 import RmaLogo from '../../assets/rma-logo.svg'
 
