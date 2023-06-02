@@ -1,5 +1,11 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { TextField, Button, Box , MenuItem} from '@mui/material';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
 
 const AddBeneficiaire = ({ onAddBeneficiaire }) => {
   const [nom, setNom] = useState('');
@@ -16,85 +22,163 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
   const [modifierLe, setModfierLe] = useState('');
   const [modifierPar, setModifierPar] = useState('');
 
+    const [beneficiaire, setBeneficiaire]=useState({
+        nom: 'nom',
+        prenom : 'prenom',
+        matricule: 'matricule',
+        version: 'version',
+        garantie: 'garantie',
+        dateDepart : 'dateDepart',
+        RfDirection :'rfDirection',
+        RfBeneficiaire:'rfBeneficiaire',
+        CentreCout:'centreCout',
+        creeLe : 'creeLe',
+        creePar:'creePar',
+        modifierLe: 'modifierLe',
+        modifierPar: 'modifierPar'
+    })
+
+    // interface IcentreCout{
+    //     centreCout:String
+    // }
   const handleNomChange = (e) => {
-    setNom(e.target.value);
+    
+    setBeneficiaire({...beneficiaire,nom:e.target.value})
   };
 
   const handlePrenomChange = (e) => {
-    setPrenom(e.target.value);
+    setBeneficiaire({...beneficiaire,prenom:e.target.value})
   };
 
   const handleMatriculeChange = (e) => {
-    setMatricule(e.target.value);
+    setBeneficiaire({...beneficiaire,matricule:e.target.value})
   };
 
   const handleVersionChange = (e) => {
-    setVersion(e.target.value);
+    setBeneficiaire({...beneficiaire,version:e.target.value})
   };
 
   const handleGarantieChange = (e) => {
-    setGarantie(e.target.value);
+    setBeneficiaire({...beneficiaire,garantie:e.target.value})
   };
 
   const handleDateDepartChange = (e) => {
-    setDateDepart(e.target.value);
+    setBeneficiaire({...beneficiaire,dateDepart:e.target.value})
   };
   const handleRfDirectionChange = (e) =>{
-    setRfDirection(e.target.value);
+    setBeneficiaire({...beneficiaire,RfDirection:e.target.value})
   }
   const handleRfBeneficiaireChange = (e)=>{
-    setRfBeneficiaire(e.target.value);
+    setBeneficiaire({...beneficiaire,RfBeneficiaire:e.target.value})
   }
   const handleCentreCoutChange = (e) =>{
-    setCentrCout(e.target.value);
+    setBeneficiaire({...beneficiaire,CentreCout:e.target.value})
   }
   const handlecreeLeChange = (e) =>{
-    setCreeLe(e.target.value);
+    setBeneficiaire({...beneficiaire,creeLe:e.target.value})
   }
   const handlecreeParChange = (e) =>{
-    setCreePar(e.target.value);
+    setBeneficiaire({...beneficiaire,creePar:e.target.value})
   } 
   const handlemodifierLeChange = (e)=>{
-    setModfierLe(e.target.value);
+    setBeneficiaire({...beneficiaire,modifierLe:e.target.value})
   }
   const handlemodifierParChange = (e)=>{
-    setModifierPar(e.target.value);
+    setBeneficiaire({...beneficiaire,modifierPar:e.target.value})
   }
+  const newBeneficiaire = {
+    version: version,
+    nom: nom,
+    prenom: prenom,
+    matricule: matricule,
+    garantie: garantie,
+    dateDepart: dateDepart,
+    RfDirection:RfDirection,
+    RfBeneficiaire: RfBeneficiaire,
+    CentreCout: CentreCout,
+    creeLe: creeLe,
+    creePar: creePar,
+    modifierLe: modifierLe,
+    modifierPar: modifierPar,
+  };
 
-  const handleAddBeneficiaire = () => {
-    const newBeneficiaire = {
-      version: version,
-      nom: nom,
-      prenom: prenom,
-      matricule: matricule,
-      garantie: garantie,
-      dateDepart: dateDepart,
-      RfDirection:RfDirection,
-      RfBeneficiaire: RfBeneficiaire,
-      CentreCout: CentreCout,
-      creeLe: creeLe,
-      creePar: creePar,
-      modifierLe: modifierLe,
-      modifierPar: modifierPar,
+  const [centresDeCout, setCentresDeCout] = useState([]);
+
+  useEffect(() => {
+    const fetchCentresDeCout = async () => {
+      try {
+        const response = await axios.get('http://localhost:8089/centreCouts');
+        setCentresDeCout(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des centres de coût :', error);
+      }
+    };
+  
+    fetchCentresDeCout();
+  }, []);
+
+  const [rfBeneficiaires, setRfBeneficiaires] = useState([]);
+
+  useEffect(() => {
+    const fetchRfBeneficiaires = async () => {
+      try {
+        const response = await axios.get('http://localhost:8089/rfbeneficiaires');
+        setRfBeneficiaires(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des RfBeneficiaires :', error);
+      }
     };
 
-    onAddBeneficiaire(newBeneficiaire);
+    fetchRfBeneficiaires();
+  }, []);
 
-    setNom('');
-    setPrenom('');
-    setMatricule('');
-    setVersion('');
-    setGarantie('');
-    setDateDepart('');
-    setRfDirection('');
-    setRfBeneficiaire('');
-    setCentrCout('');
-    setCreeLe('');
-    setCreePar('');
-    setModfierLe('');
-    setModifierPar('');
-    alert("good")
+  useEffect(() => {
+    const fetchCentresDeCout = async () => {
+      try {
+        const response = await axios.get('http://localhost:8089/centreCouts');
+        setCentresDeCout(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des centres de coût :', error);
+      }
+    };
+  
+    fetchCentresDeCout();
+  }, []);
+  
+  const [rfDirections, setRfDirections] = useState([]);
+
+  useEffect(() => {
+    const fetchRfDirections = async () => {
+      try {
+        const response = await axios.get('http://localhost:8089/rfdirections');
+        setRfDirections(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des RfDirections :', error);
+      }
+    };
+
+    fetchRfDirections();
+  }, []);
+  
+
+
+  const handleAddBeneficiaire = async () => {
+    try {
+      const response = await axios.post(
+        'http://localhost:8089/beneficiaire/add',
+        beneficiaire
+      );
+      console.log('Response:', response.data);
+      // Effectuez les traitements supplémentaires nécessaires après l'enregistrement réussi du bénéficiaire
+      toast.success('Bénéficiaire enregistré avec succès.');
+      onAddBeneficiaire(newBeneficiaire); // Mettre à jour la liste des bénéficiaires
+    } catch (error) {
+      console.error('Error saving beneficiaire:', error);
+      toast.error('Erreur lors de l\'enregistrement du bénéficiaire.');
+      // Gérez l'erreur en conséquence
+    }
   };
+  
 
   return (
     <Box
@@ -114,15 +198,14 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
       <Box sx={{ display: 'flex', gap: '20px', margin:'10px' }}>
         <TextField
           label="Nom"
-          variant="outlined"
-          value={nom}
+          variant="outlined" 
           onChange={handleNomChange}
           fullWidth
         />
         <TextField
           label="Prénom"
           variant="outlined"
-          value={prenom}
+          
           onChange={handlePrenomChange}
           fullWidth
         />
@@ -132,14 +215,14 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
          
         label="Matricule"
         variant="outlined"
-        value={matricule}
+        
         onChange={handleMatriculeChange}
         fullWidth
       />
       <TextField
         label="Version"
         variant="outlined"
-        value={version}
+       
         onChange={handleVersionChange}
         fullWidth
       />
@@ -148,46 +231,66 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
       <TextField
         label="Garantie"
         variant="outlined"
-        value={garantie}
+        
         onChange={handleGarantieChange}
         fullWidth
       />
       <TextField
-        label="Date de départ"
-        variant="outlined"
-        value={dateDepart}
-        onChange={handleDateDepartChange}
-        fullWidth
-      />
+       label="Date de départ"
+       type="date"
+       variant="outlined"
+        
+       onChange={handleDateDepartChange}
+       fullWidth
+       />
       </Box>
       <Box sx={{ display: 'flex', gap: '20px', margin:'10px' }}>
       <TextField
         label="RfDirection"
         variant="outlined"
-        value={RfDirection}
         onChange={handleRfDirectionChange}
         fullWidth
-      />
+        select
+      >
+        {rfDirections.map((rfDirection) => (
+          <MenuItem key={rfDirection.id} value={rfDirection.id}>
+            {rfDirection.nomDirection}
+          </MenuItem>
+        ))}
+      </TextField>
       <TextField
-        label="RfBenenficiaire"
+        label="RfBeneficiaire"
         variant="outlined"
-        value={RfBeneficiaire}
         onChange={handleRfBeneficiaireChange}
         fullWidth
-      />
+        select
+      >
+        {rfBeneficiaires.map((rfBeneficiaire) => (
+          <MenuItem key={rfBeneficiaire.id} value={rfBeneficiaire.id}>
+            {rfBeneficiaire.statutBeneficiaire}
+          </MenuItem>
+        ))}
+      </TextField>
       </Box>
       <Box sx={{ display: 'flex', gap: '20px', margin:'10px' }}>
       <TextField
         label="Centre de cout"
         variant="outlined"
-        value={CentreCout}
         onChange={handleCentreCoutChange}
         fullWidth
-      />
+        select
+        >
+        {centresDeCout.map((centreDeCout) => (
+            <MenuItem key={centreDeCout.id} value={centreDeCout.id}>
+            {centreDeCout.centreCout}
+            </MenuItem>
+        ))}
+        </TextField>
+
       <TextField
         label="Cree Le"
         variant="outlined"
-        value={creeLe}
+        
         onChange={handlecreeLeChange}
         fullWidth
       />
@@ -196,14 +299,14 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
       <TextField
         label="Cree Par"
         variant="outlined"
-        value={creePar}
+       
         onChange={handlecreeParChange}
         fullWidth
       />
       <TextField
         label="Modifier Le"
         variant="outlined"
-        value={modifierLe}
+       
         onChange={handlemodifierLeChange}
         fullWidth
       />
@@ -212,16 +315,18 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
       <TextField 
         label="Modifier Par"
         variant="outlined"
-        value={modifierPar}
+
         onChange={handlemodifierParChange}
         fullWidth
       />
       </Box>
-      
+    
       <Button variant="contained" color="primary" onClick={handleAddBeneficiaire}>
-        Ajouter
+        Sauvgarder
       </Button>
+
     </Box>
+    
   );
 };
 

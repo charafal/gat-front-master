@@ -9,26 +9,13 @@ import { Link } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import AddBeneficiaire from './AddBeneficiaire';
 
-
-
-
 const Beneficiaire = () => {
   const [rows, setRows] = useState([]);
- const [searchInput, setSearchInput] = useState('');
-  const [pageSize, setPageSize] = useState(5);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [showAddForm, setShowAddForm] = useState(false);
   const [searchInputNom, setSearchInputNom] = useState('');
-const [searchInputPrenom, setSearchInputPrenom] = useState('');
-const [searchInputMatricule, setSearchInputMatricule] = useState('');
-
-
-
-
+  const [searchInputPrenom, setSearchInputPrenom] = useState('');
+  const [searchInputMatricule, setSearchInputMatricule] = useState('');
 
   useEffect(() => {
-  
-    handleSearch();
     fetchBeneficiaires();
   }, []);
 
@@ -37,70 +24,46 @@ const [searchInputMatricule, setSearchInputMatricule] = useState('');
       const response = await axios.get('http://localhost:8089/beneficiaire/beneficiares', {
         params: {
           page: page,
-          pageSize: pageSize
+          pageSize: 5
         }
       });
-      console.log('response.data');
-      console.log(response.data);
       setRows(response.data);
     } catch (error) {
       console.error('Error fetching beneficiaires:', error);
     }
   };
-  
 
   const handleSearch = async () => {
     if (searchInputNom === '' && searchInputPrenom === '' && searchInputMatricule === '') {
-      
-     
       fetchBeneficiaires();
       return;
     }
     try {
       const response = await axios.get('http://localhost:8089/beneficiaire/recherche', {
-  params: {
-    nom: searchInputNom,
-    prenom: searchInputPrenom,
-    matricule: searchInputMatricule,
-    page: currentPage,
-    pageSize: pageSize
-  }
+        params: {
+          nom: searchInputNom,
+          prenom: searchInputPrenom,
+          matricule: searchInputMatricule,
+          page: 1,
+          pageSize: 5
+        }
       });
-  
       setRows(response.data);
     } catch (error) {
       console.error('Error searching beneficiaires:', error);
     }
   };
-  
+
   const handleInputChangeNom = (e) => {
     setSearchInputNom(e.target.value);
   };
-  
+
   const handleInputChangePrenom = (e) => {
     setSearchInputPrenom(e.target.value);
   };
-  
+
   const handleInputChangeMatricule = (e) => {
     setSearchInputMatricule(e.target.value);
-  };
-  
-
-  const handleInputChange = (e) => {
-    
-    const { name, value } = e.target;
-
-    setSearchInput({ ...searchInput, [name]: value });
-  
-    // Vérifier si la valeur du champ de recherche est vide
-    if (name === 'Nom' && value === '') {
-      fetchBeneficiaires(); // Récupérer tous les forfaits
-    }
-  };
-
-  const handlePageSizeChange = (params) => {
-    setPageSize(params.pageSize);
-    setCurrentPage(1);
   };
 
   
@@ -111,23 +74,13 @@ const [searchInputMatricule, setSearchInputMatricule] = useState('');
     { field: 'prenom', headerName: 'Prénom', width: 130 },
     { field: 'matricule', headerName: 'Matricule', width: 130 },
     { field: 'dateDepart', headerName: 'Date de Départ', width: 160 },
-    { field: 'rfDirection', headerName: 'Direction', width: 130, valueGetter: (params) => params.row.rfDirection.nomDirection
-  },
-    {
-      field: 'rfBeneficiaire',
-      headerName: 'Statut Bénéficiaire',
-      width: 180,
-      valueGetter: (params) => params.row.rfBeneficiaire.statutBeneficiaire,
-    },
-    { field: 'centreCout', headerName: 'Centre de Coût', width: 130,
-     valueGetter: (params) => params.row.centreCout.centreCout,
-
-  },
+    { field: 'rfDirection', headerName: 'Direction', width: 130, valueGetter: (params) => params.row.rfDirection.nomDirection },
+    { field: 'rfBeneficiaire', headerName: 'Statut Bénéficiaire', width: 180, valueGetter: (params) => params.row.rfBeneficiaire.statutBeneficiaire },
+    { field: 'centreCout', headerName: 'Centre de Coût', width: 130, valueGetter: (params) => params.row.centreCout.centreCout },
   ];
 
   return (
-    <div
-    style={{
+    <div style={{
       backgroundColor: '#fff',
       padding: '20',
       borderRadius: '10px',
@@ -137,87 +90,76 @@ const [searchInputMatricule, setSearchInputMatricule] = useState('');
       gap: '20px',
     }}>
       <Box>
-      <div
-        style={{
+        <div style={{
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
-        }}
-      >
-        <TextField
-          label="Nom"
-          variant="outlined"
-          value={searchInputNom}
-          onChange={handleInputChangeNom}
-          placeholder="Rechercher par nom"
-          fullWidth
-        />
-
-        <TextField
-          label="Prénom"
-          variant="outlined"
-          value={searchInputPrenom}
-          onChange={handleInputChangePrenom}
-          placeholder="Rechercher par prénom"
-          fullWidth
-        />
-
-        <TextField
-          label="Matricule"
-          variant="outlined"
-          value={searchInputMatricule}
-          onChange={handleInputChangeMatricule}
-          placeholder="Rechercher par matricule"
-          fullWidth
-        />
-
-      <Button
-         style={{
-          padding: '0 50px',
-          margin: '0 25px',
-        }}
+        }}>
+          <TextField
+            label="Nom"
+            variant="outlined"
+            value={searchInputNom}
+            onChange={handleInputChangeNom}
+            placeholder="Rechercher par nom"
+            fullWidth
+          />
+          <TextField
+            label="Prénom"
+            variant="outlined"
+            value={searchInputPrenom}
+            onChange={handleInputChangePrenom}
+            placeholder="Rechercher par prénom"
+            fullWidth
+          />
+          <TextField
+            label="Matricule"
+            variant="outlined"
+            value={searchInputMatricule}
+            onChange={handleInputChangeMatricule}
+            placeholder="Rechercher par matricule"
+            fullWidth
+          />
+          <Button
+            style={{
+              padding: '0 50px',
+              margin: '0 25px',
+            }}
             variant="contained"
             startIcon={<SearchIcon />}
             onClick={handleSearch}
-      >
-        Chercher
-      </Button>
-      </div>
-    </Box>
+          >
+            Chercher
+          </Button>
+        </div>
+      </Box>
 
-    <Box>
-      <h1>Résultat de recherche</h1>
-    
-<Button
-  variant="contained"
-  startIcon={<AddIcon />}
-  component={Link}
-  to="/AddBeneficiaire"
->
-  Ajouter
-</Button>
-    </Box>
+      <Box>
+        <h1>Résultat de recherche</h1>
+
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          component={Link}
+          to="/AddBeneficiaire"
+        >
+          Ajouter
+        </Button>
+      </Box>
 
       
-
       <Box style={{ height: 400, width: '100%' }}>
-      <DataGrid
+        <DataGrid
           rows={rows}
           columns={columns}
-          pageSize={pageSize}
-          onPageSizeChange={(params) => {
-            handlePageSizeChange(params);
-            setCurrentPage(1);
-          }}
-          onPageChange={(params) => setCurrentPage(params.page)}
+          pageSize={5}
+         
+         
           rowsPerPageOptions={[5]}
           pagination
         />
-
       </Box>
     </div>
   );
 };
 
 export default Beneficiaire;
-
