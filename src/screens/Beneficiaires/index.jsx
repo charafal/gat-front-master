@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
-import { Box } from '@mui/material';
+import { Box, FormControl, Paper } from '@mui/material';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
@@ -66,7 +66,7 @@ const Beneficiaire = () => {
     setSearchInputMatricule(e.target.value);
   };
 
-  
+
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -80,57 +80,61 @@ const Beneficiaire = () => {
   ];
 
   return (
-    <div style={{
-      backgroundColor: '#fff',
-      padding: '20',
-      borderRadius: '10px',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '20px',
-    }}>
-      <Box>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-        }}>
-          <TextField
-            label="Nom"
-            variant="outlined"
-            value={searchInputNom}
-            onChange={handleInputChangeNom}
-            placeholder="Rechercher par nom"
-            fullWidth
-          />
-          <TextField
-            label="Prénom"
-            variant="outlined"
-            value={searchInputPrenom}
-            onChange={handleInputChangePrenom}
-            placeholder="Rechercher par prénom"
-            fullWidth
-          />
-          <TextField
-            label="Matricule"
-            variant="outlined"
-            value={searchInputMatricule}
-            onChange={handleInputChangeMatricule}
-            placeholder="Rechercher par matricule"
-            fullWidth
-          />
-          <Button
-            style={{
-              padding: '0 50px',
-              margin: '0 25px',
+    <>
+      <Box sx={{ width: '95%', marginX: '2%' }}>
+
+        <Paper sx={{ width: "100%", mb: 2, padding: "1%" }}>
+          <div>
+            <Box sx={{
+              "& > :not(style)": { m: 1, width: "25ch" },
+              textAlign: "center",
             }}
-            variant="contained"
-            startIcon={<SearchIcon />}
-            onClick={handleSearch}
-          >
-            Chercher
-          </Button>
-        </div>
+            >
+              <Box>
+                
+              </Box>
+
+              <TextField
+                label="Nom"
+                variant="outlined"
+                value={searchInputNom}
+                onChange={handleInputChangeNom}
+                placeholder="Rechercher par nom"
+                fullWidth
+              />
+              <TextField
+                label="Prénom"
+                variant="outlined"
+                value={searchInputPrenom}
+                onChange={handleInputChangePrenom}
+                placeholder="Rechercher par prénom"
+                fullWidth
+              />
+              <TextField
+                label="Matricule"
+                variant="outlined"
+                value={searchInputMatricule}
+                onChange={handleInputChangeMatricule}
+                placeholder="Rechercher par matricule"
+                fullWidth
+              />
+                <Button
+                  variant="contained"
+                  startIcon={<SearchIcon />}
+                  onClick={handleSearch}
+                >
+                  Chercher
+                </Button>
+            
+
+            </Box>
+          </div>
+
+
+
+        </Paper>
+
+
       </Box>
 
       <Box>
@@ -146,19 +150,19 @@ const Beneficiaire = () => {
         </Button>
       </Box>
 
-      
+
       <Box style={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={rows}
           columns={columns}
           pageSize={5}
-         
-         
           rowsPerPageOptions={[5]}
           pagination
         />
       </Box>
-    </div>
+
+    </>
+
   );
 };
 

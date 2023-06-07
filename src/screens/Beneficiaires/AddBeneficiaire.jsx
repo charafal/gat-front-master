@@ -21,6 +21,7 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
   const [creePar , setCreePar] = useState('');
   const [modifierLe, setModfierLe] = useState('');
   const [modifierPar, setModifierPar] = useState('');
+  const [centreCoutId, setCentreCoutId] = useState('');
 
     const [beneficiaire, setBeneficiaire]=useState({
         nom: 'nom',
@@ -41,6 +42,8 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
     // interface IcentreCout{
     //     centreCout:String
     // }
+   
+      
   const handleNomChange = (e) => {
     
     setBeneficiaire({...beneficiaire,nom:e.target.value})
@@ -72,7 +75,8 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
     setBeneficiaire({...beneficiaire,RfBeneficiaire:e.target.value})
   }
   const handleCentreCoutChange = (e) =>{
-    setBeneficiaire({...beneficiaire,CentreCout:e.target.value})
+    setBeneficiaire({...beneficiaire,CentreCout:e.target.value});
+    setCentreCoutId(e.target.value);
   }
   const handlecreeLeChange = (e) =>{
     setBeneficiaire({...beneficiaire,creeLe:e.target.value})
@@ -86,6 +90,7 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
   const handlemodifierParChange = (e)=>{
     setBeneficiaire({...beneficiaire,modifierPar:e.target.value})
   }
+  
   const newBeneficiaire = {
     version: version,
     nom: nom,
@@ -100,24 +105,26 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
     creePar: creePar,
     modifierLe: modifierLe,
     modifierPar: modifierPar,
+    CentreCout_Id: centreCoutId,
   };
 
-  const [centresDeCout, setCentresDeCout] = useState([]);
+  const [centreCout, setCentreCout] = useState([]);
 
   useEffect(() => {
-    const fetchCentresDeCout = async () => {
+    const fetchCentreCout = async () => {
       try {
         const response = await axios.get('http://localhost:8089/centreCouts');
-        setCentresDeCout(response.data);
+        setCentreCout(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération des centres de coût :', error);
       }
     };
   
-    fetchCentresDeCout();
+    fetchCentreCout();
   }, []);
 
   const [rfBeneficiaires, setRfBeneficiaires] = useState([]);
+  
 
   useEffect(() => {
     const fetchRfBeneficiaires = async () => {
@@ -133,16 +140,16 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
   }, []);
 
   useEffect(() => {
-    const fetchCentresDeCout = async () => {
+    const fetchCentreCout = async () => {
       try {
         const response = await axios.get('http://localhost:8089/centreCouts');
-        setCentresDeCout(response.data);
+        setCentreCout(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération des centres de coût :', error);
       }
     };
   
-    fetchCentresDeCout();
+    fetchCentreCout();
   }, []);
   
   const [rfDirections, setRfDirections] = useState([]);
@@ -164,18 +171,14 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
 
   const handleAddBeneficiaire = async () => {
     try {
-      const response = await axios.post(
-        'http://localhost:8089/beneficiaire/add',
-        beneficiaire
-      );
-      console.log('Response:', response.data);
-      // Effectuez les traitements supplémentaires nécessaires après l'enregistrement réussi du bénéficiaire
+      const response = await axios.post('http://localhost:8089/beneficiaire/add',newBeneficiaire)
+      
       toast.success('Bénéficiaire enregistré avec succès.');
-      onAddBeneficiaire(newBeneficiaire); // Mettre à jour la liste des bénéficiaires
+      onAddBeneficiaire(response.data); // Mettre à jour la liste des bénéficiaires
     } catch (error) {
-      console.error('Error saving beneficiaire:', error);
+    
       toast.error('Erreur lors de l\'enregistrement du bénéficiaire.');
-      // Gérez l'erreur en conséquence
+      
     }
   };
   
@@ -191,10 +194,11 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
         padding: '20px',
         borderRadius: '10px',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-        backgroundColor: '#fff',
+        backgroundColor: '',
       }}
     >
       <h2>Ajouter un bénéficiaire</h2>
+      
       <Box sx={{ display: 'flex', gap: '20px', margin:'10px' }}>
         <TextField
           label="Nom"
@@ -236,7 +240,7 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
         fullWidth
       />
       <TextField
-       label="Date de départ"
+       label="Date  départ"
        type="date"
        variant="outlined"
         
@@ -277,12 +281,13 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
         label="Centre de cout"
         variant="outlined"
         onChange={handleCentreCoutChange}
+        
         fullWidth
         select
         >
-        {centresDeCout.map((centreDeCout) => (
-            <MenuItem key={centreDeCout.id} value={centreDeCout.id}>
-            {centreDeCout.centreCout}
+        {centreCout.map((centreCout) => (
+            <MenuItem key={centreCout.id} value={centreCout.id}>
+            {centreCout.centreCout}
             </MenuItem>
         ))}
         </TextField>
