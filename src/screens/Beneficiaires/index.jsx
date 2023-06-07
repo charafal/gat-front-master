@@ -8,6 +8,9 @@ import TextField from '@mui/material/TextField';
 import { Link } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import AddBeneficiaire from './AddBeneficiaire';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import IconButton from '@mui/material/IconButton';
 
 const Beneficiaire = () => {
   const [rows, setRows] = useState([]);
@@ -21,10 +24,11 @@ const Beneficiaire = () => {
 
   const fetchBeneficiaires = async (page) => {
     try {
-      const response = await axios.get('http://localhost:8089/beneficiaire/beneficiares', {
+      const response = await axios.get('http://localhost:8089/Beneficiaire/beneficiares', {
         params: {
           page: page,
-          pageSize: 5
+          pageSize: 5,
+          sort: 'id,desc'
         }
       });
       setRows(response.data);
@@ -39,16 +43,13 @@ const Beneficiaire = () => {
       return;
     }
     try {
-      const response = await axios.get('http://localhost:8089/beneficiaire/recherche', {
-        params: {
-          nom: searchInputNom,
-          prenom: searchInputPrenom,
-          matricule: searchInputMatricule,
-          page: 1,
-          pageSize: 5
-        }
-      });
+      const response = await axios.post('http://localhost:8089/Beneficiaire/multi',{
+        nom: searchInputNom,
+        prenom: searchInputPrenom,
+        matricule: searchInputMatricule
+      }).then((response) => {
       setRows(response.data);
+      return response.data})
     } catch (error) {
       console.error('Error searching beneficiaires:', error);
     }
@@ -65,11 +66,11 @@ const Beneficiaire = () => {
   const handleInputChangeMatricule = (e) => {
     setSearchInputMatricule(e.target.value);
   };
-
-
+  
+  
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
+    
     { field: 'nom', headerName: 'Nom', width: 130 },
     { field: 'prenom', headerName: 'Prénom', width: 130 },
     { field: 'matricule', headerName: 'Matricule', width: 130 },
@@ -77,11 +78,37 @@ const Beneficiaire = () => {
     { field: 'rfDirection', headerName: 'Direction', width: 130, valueGetter: (params) => params.row.rfDirection.nomDirection },
     { field: 'rfBeneficiaire', headerName: 'Statut Bénéficiaire', width: 180, valueGetter: (params) => params.row.rfBeneficiaire.statutBeneficiaire },
     { field: 'centreCout', headerName: 'Centre de Coût', width: 130, valueGetter: (params) => params.row.centreCout.centreCout },
+   
+    {
+      field: 'Modfier/Consulter',
+      headerName: 'Modfier/Consulter',
+      width: 120,
+      renderCell: (params) => (
+        <div>
+          <IconButton
+            color="primary"
+            aria-label="Modifier"
+            component={Link}
+            to={`/modifierBeneficiaire/${params.row.id}`}
+          >
+            <EditIcon />
+          </IconButton>
+          <IconButton
+            color="primary"
+            aria-label="Consulter"
+            component={Link}
+            to={`/consulterBeneficiaire/${params.row.id}`}
+          >
+            <VisibilityIcon />
+          </IconButton>
+        </div>
+      ),
+    },
   ];
 
   return (
     <>
-      <Box sx={{ width: '95%', marginX: '2%' }}>
+      <Box sx={{width: '95%', marginX: '2%' }}>
 
         <Paper sx={{ width: "100%", mb: 2, padding: "1%" }}>
           <div>
@@ -118,6 +145,33 @@ const Beneficiaire = () => {
                 placeholder="Rechercher par matricule"
                 fullWidth
               />
+              <TextField
+                label="Centre de cout"
+                variant="outlined"
+                value={searchInputMatricule}
+                onChange={handleInputChangeMatricule}
+                placeholder="Rechercher par matricule"
+                fullWidth
+                select
+              />
+              <TextField
+                label="Direction"
+                variant="outlined"
+                value={searchInputMatricule}
+                onChange={handleInputChangeMatricule}
+                placeholder="Rechercher par matricule"
+                fullWidth
+                select
+              />
+              <TextField
+                label="Statut du bénéficiaire"
+                variant="outlined"
+                value={searchInputMatricule}
+                onChange={handleInputChangeMatricule}
+                placeholder="Rechercher par matricule"
+                fullWidth
+                select
+              />
                 <Button
                   variant="contained"
                   startIcon={<SearchIcon />}
@@ -130,10 +184,7 @@ const Beneficiaire = () => {
             </Box>
           </div>
 
-
-
         </Paper>
-
 
       </Box>
 
@@ -149,7 +200,6 @@ const Beneficiaire = () => {
           Ajouter
         </Button>
       </Box>
-
 
       <Box style={{ height: 400, width: '100%' }}>
         <DataGrid
