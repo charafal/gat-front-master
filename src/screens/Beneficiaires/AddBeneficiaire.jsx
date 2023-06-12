@@ -2,7 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { TextField, Button, Box , MenuItem} from '@mui/material';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import Stack from '@mui/material/Stack';
+
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 
 
@@ -11,12 +22,12 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
   const [nom, setNom] = useState('');
   const [prenom, setPrenom] = useState('');
   const [matricule, setMatricule] = useState('');
-  const [version, setVersion] = useState('');
+  const [version, setVersion] = useState('0');
   const [garantie, setGarantie] = useState('');
   const [dateDepart, setDateDepart] = useState('');
-  const [RfDirection, setRfDirection] = useState('');
-  const [RfBeneficiaire, setRfBeneficiaire] = useState('');
-  const [CentreCout, setCentrCout] = useState('');
+  const [rfDirection, setRfDirection] =  useState([]);
+  const [rfBeneficiaire, setRfBeneficiaire] =  useState([]);
+  const [centreCout, setCentrCout] = useState();
   const [creeLe, setCreeLe] = useState('');
   const [creePar , setCreePar] = useState('');
   const [modifierLe, setModfierLe] = useState('');
@@ -30,13 +41,9 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
         version: 'version',
         garantie: 'garantie',
         dateDepart : 'dateDepart',
-        RfDirection :'rfDirection',
-        RfBeneficiaire:'rfBeneficiaire',
-        CentreCout:'centreCout',
-        creeLe : 'creeLe',
-        creePar:'creePar',
-        modifierLe: 'modifierLe',
-        modifierPar: 'modifierPar'
+        rfDirection :'rfDirection',
+        rfBeneficiaire:'rfBeneficiaire',
+        centreCout:'centreCout' 
     })
 
     // interface IcentreCout{
@@ -69,14 +76,18 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
     setBeneficiaire({...beneficiaire,dateDepart:e.target.value})
   };
   const handleRfDirectionChange = (e) =>{
-    setBeneficiaire({...beneficiaire,RfDirection:e.target.value})
+    setBeneficiaire({...beneficiaire,rfDirection:e.target.value});
+    setRfDirection(e.target.value);
   }
   const handleRfBeneficiaireChange = (e)=>{
-    setBeneficiaire({...beneficiaire,RfBeneficiaire:e.target.value})
+    setBeneficiaire({...beneficiaire,rfBeneficiaire:e.target.value});
+    setRfBeneficiaire(e.target.value);
+
   }
   const handleCentreCoutChange = (e) =>{
     setBeneficiaire({...beneficiaire,entreCout:e.target.value});
     setCentreCoutId(e.target.value);
+    setCentrCout(e.target.value);
   }
   const handlecreeLeChange = (e) =>{
     setBeneficiaire({...beneficiaire,creeLe:e.target.value})
@@ -98,9 +109,9 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
     matricule: matricule,
     garantie: garantie,
     dateDepart: dateDepart,
-    RfDirection:RfDirection,
-    RfBeneficiaire: RfBeneficiaire,
-    CentreCout: CentreCout,
+    rfDirection:rfDirection,
+    rfBeneficiaire: rfBeneficiaire,
+    centreCout: centreCoutId,
     creeLe: creeLe,
     creePar: creePar,
     modifierLe: modifierLe,
@@ -108,13 +119,14 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
     CentreCout_Id: centreCoutId,
   };
 
-  const [centreCout, setCentreCout] = useState([]);
+
 
   useEffect(() => {
     const fetchCentreCout = async () => {
       try {
         const response = await axios.get('http://localhost:8089/centreCouts');
-        setCentreCout(response.data);
+        setCentrCout(response.data);
+        console.log(response.data)
       } catch (error) {
         console.error('Erreur lors de la récupération des centres de coût :', error);
       }
@@ -124,7 +136,7 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
   }, []);
 
   const [rfBeneficiaires, setRfBeneficiaires] = useState([]);
-  
+  const [centreeCout, setCentreCout] = useState([]);
 
   useEffect(() => {
     const fetchRfBeneficiaires = async () => {
@@ -156,7 +168,7 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
 
   useEffect(() => {
     const fetchRfDirections = async () => {
-      try {
+      try { 
         const response = await axios.get('http://localhost:8089/rfdirections');
         setRfDirections(response.data);
       } catch (error) {
@@ -171,15 +183,51 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
 
   const handleAddBeneficiaire = async () => {
     try {
-      const response = await axios.post('http://localhost:8089/beneficiaire/add',newBeneficiaire)
+      console.log("Add")
+      console.log("££££££££££££",beneficiaire)
+      console.log("££££££££££££",rfBeneficiaire)
+      console.log("££££££££££££",rfDirection)
+      const ccentre = {id : centreCout}
+      const rfben = {id : rfBeneficiaire}
+      const rfdire = {id : rfDirection}
+
+      beneficiaire.centreCout=ccentre
+      beneficiaire.rfBeneficiaire=rfben
+      beneficiaire.rfDirection=rfdire
+      beneficiaire.version=0
+
+      console.log(beneficiaire)
+      const response = await axios.post('http://localhost:8089/Beneficiaire/add', beneficiaire, {
+        
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        
+        }
+
+      });
       
-      toast.success('Bénéficiaire enregistré avec succès.');
+      setOpen(true);
       onAddBeneficiaire(response.data); // Mettre à jour la liste des bénéficiaires
     } catch (error) {
-    
+  
       toast.error('Erreur lors de l\'enregistrement du bénéficiaire.');
-      
+  
     }
+  };
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
   };
   
 
@@ -222,13 +270,6 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
         variant="outlined"
         
         onChange={handleMatriculeChange}
-        fullWidth
-      />
-      <TextField
-        label="Version"
-        variant="outlined"
-       
-        onChange={handleVersionChange}
         fullWidth
       />
       </Box>
@@ -282,54 +323,29 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
         label="Centre de cout"
         variant="outlined"
         onChange={handleCentreCoutChange}
-        
         fullWidth
         select
         >
-        {centreCout.map((centreCout) => (
+        {centreeCout.map((centreCout) => (
             <MenuItem key={centreCout.id} value={centreCout.id}>
             {centreCout.centreCout}
             </MenuItem>
         ))}
         </TextField>
 
-      <TextField
-        label="Cree Le"
-        variant="outlined"
-        
-        onChange={handlecreeLeChange}
-        fullWidth
-      />
-      </Box>
-      <Box sx={{ display: 'flex', gap: '20px', margin:'10px' }}>
-      <TextField
-        label="Cree Par"
-        variant="outlined"
-       
-        onChange={handlecreeParChange}
-        fullWidth
-      />
-      <TextField
-        label="Modifier Le"
-        variant="outlined"
-       
-        onChange={handlemodifierLeChange}
-        fullWidth
-      />
-      </Box>
-      <Box sx={{ display: 'flex', gap: '10px', margin:'10px' }}>
-      <TextField 
-        label="Modifier Par"
-        variant="outlined"
-
-        onChange={handlemodifierParChange}
-        fullWidth
-      />
+      
       </Box>
     
-      <Button variant="contained" color="primary" onClick={handleAddBeneficiaire}>
+      <Button variant="contained" color="primary" onClick={handleAddBeneficiaire}
+      component={Link}
+      to="/beneficiaires">
         Sauvgarder
       </Button>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          This is a success message!
+        </Alert>
+      </Snackbar>
 
     </Box>
     
