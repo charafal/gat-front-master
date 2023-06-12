@@ -17,7 +17,7 @@ const ConsulterBeneficiaire = () => {
 
   const fetchBeneficiaire = async () => {
     try {
-      const response = await axios.get(`http://localhost:8089/Beneficiaire/${id}`);
+      const response = await axios.get(`http://localhost:8089/beneficiaire/${id}`);
       setBeneficiaire(response.data);
     } catch (error) {
       console.error('Erreur lors de la récupération du bénéficiaire :', error);
