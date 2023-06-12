@@ -75,7 +75,7 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
     setBeneficiaire({...beneficiaire,RfBeneficiaire:e.target.value})
   }
   const handleCentreCoutChange = (e) =>{
-    setBeneficiaire({...beneficiaire,CentreCout:e.target.value});
+    setBeneficiaire({...beneficiaire,entreCout:e.target.value});
     setCentreCoutId(e.target.value);
   }
   const handlecreeLeChange = (e) =>{
@@ -213,6 +213,7 @@ const AddBeneficiaire = ({ onAddBeneficiaire }) => {
           onChange={handlePrenomChange}
           fullWidth
         />
+       
       </Box>
       <Box sx={{ display: 'flex', gap: '20px', margin:'10px' }}>
       <TextField
