@@ -178,7 +178,7 @@ const [searchInputStatutBeneficiaire, setSearchInputStatutBeneficiaire] = useSta
   return (
     <>
       <Box sx={{width: '95%', marginX: '2%' }}>
-      <Box sx={{width: '95%', marginX: '2%' }}>
+      
 
         <Paper sx={{ width: "100%", mb: 2, padding: "1%" }}>
           <div>
