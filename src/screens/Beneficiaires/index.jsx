@@ -15,6 +15,9 @@ import {InputAdornment } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 const Beneficiaire = () => {
+  const [page, setPage] = useState(0);
+const [pageSize, setPageSize] = useState(5);
+
   const [rows, setRows] = useState([]);
   const [searchInputNom, setSearchInputNom] = useState('');
   const [searchInputPrenom, setSearchInputPrenom] = useState('');
@@ -23,16 +26,17 @@ const Beneficiaire = () => {
 const [searchInputDirection, setSearchInputDirection] = useState('');
 const [searchInputStatutBeneficiaire, setSearchInputStatutBeneficiaire] = useState('');
 
-  useEffect(() => {
-    fetchBeneficiaires();
-  }, []);
+useEffect(() => {
+  fetchBeneficiaires();
+}, [page, pageSize]);
 
-  const fetchBeneficiaires = async (page) => {
+
+  const fetchBeneficiaires = async () => {
     try {
-      const response = await axios.get('http://localhost:8089/Beneficiaire/beneficiares', {
+      const response = await axios.get('http://localhost:8089/beneficiaire/beneficiares', {
         params: {
           page: page,
-          pageSize: 5,
+          pageSize: pageSize,
           sort: 'id,desc'
         }
       });
@@ -41,6 +45,7 @@ const [searchInputStatutBeneficiaire, setSearchInputStatutBeneficiaire] = useSta
       console.error('Error fetching beneficiaires:', error);
     }
   };
+  
   
 
   const handleSearch = async () => {
@@ -178,7 +183,7 @@ const [searchInputStatutBeneficiaire, setSearchInputStatutBeneficiaire] = useSta
   return (
     <>
       <Box sx={{width: '95%', marginX: '2%' }}>
-      
+
 
         <Paper sx={{ width: "100%", mb: 2, padding: "1%" }}>
           <div>
@@ -231,31 +236,31 @@ const [searchInputStatutBeneficiaire, setSearchInputStatutBeneficiaire] = useSta
                 ))}
                 </TextField>
                 <TextField
-   label="Direction"
-   variant="outlined"
-   value={searchInputDirection}
-   onChange={handleInputChangeDirection}
-   placeholder="Rechercher par Direction"
-   fullWidth
-   select
-   InputProps={{
-      endAdornment: (
-         <InputAdornment position="end">
-            {searchInputDirection && (
-               <IconButton onClick={() => handleInputChangeDirection('')}>
-                  <CancelIcon />
-               </IconButton>
-            )}
-         </InputAdornment>
-      )
-   }}
->
-   {rfDirections.map((rfDirection) => (
-      <MenuItem key={rfDirection.id} value={rfDirection.id}>
-         {rfDirection.nomDirection}
-      </MenuItem>
-   ))}
-</TextField>
+                label="Direction"
+                variant="outlined"
+                value={searchInputDirection}
+                onChange={handleInputChangeDirection}
+                placeholder="Rechercher par Direction"
+                fullWidth
+                select
+                InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                          {searchInputDirection && (
+                            <IconButton onClick={() => handleInputChangeDirection('')}>
+                                <CancelIcon />
+                            </IconButton>
+                          )}
+                      </InputAdornment>
+                    )
+                }}
+                >
+                  {rfDirections.map((rfDirection) => (
+                      <MenuItem key={rfDirection.id} value={rfDirection.id}>
+                        {rfDirection.nomDirection}
+                      </MenuItem>
+                  ))}
+                </TextField>
               <TextField
                 label="Statut du bénéficiaire"
                 variant="outlined"
@@ -301,14 +306,21 @@ const [searchInputStatutBeneficiaire, setSearchInputStatutBeneficiaire] = useSta
         </Button>
       </Box>
 
-      <Box style={{ height: 400, width: '100%' }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          pagination
-        />
+      <Box  sx={{width: '95%', marginX: '2%' }}>
+          <Paper sx={{ width: "100%", mb: 2, padding: "1%" }}>
+            <div>
+            <DataGrid
+              rows={rows} 
+              columns={columns}
+              page={page}
+              pageSize={pageSize}
+              rowCount={36} // Remplacez totalRows par le nombre total de bénéficiaires dans votre source de données
+              onPageChange={(newPage) => setPage(newPage)}
+              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              pagination
+           />
+            </div>
+        </Paper>  
       </Box>
       
 
