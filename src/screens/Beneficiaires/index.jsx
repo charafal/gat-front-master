@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
-import { Box, FormControl, Paper } from '@mui/material';
+import { Box, FormControl, Paper,MenuItem } from '@mui/material';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
@@ -11,12 +11,17 @@ import AddBeneficiaire from './AddBeneficiaire';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import IconButton from '@mui/material/IconButton';
+import {InputAdornment } from '@mui/material';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const Beneficiaire = () => {
   const [rows, setRows] = useState([]);
   const [searchInputNom, setSearchInputNom] = useState('');
   const [searchInputPrenom, setSearchInputPrenom] = useState('');
   const [searchInputMatricule, setSearchInputMatricule] = useState('');
+  const [searchInputCentreCout, setSearchInputCentreCout] = useState('');
+const [searchInputDirection, setSearchInputDirection] = useState('');
+const [searchInputStatutBeneficiaire, setSearchInputStatutBeneficiaire] = useState('');
 
   useEffect(() => {
     fetchBeneficiaires();
@@ -36,18 +41,29 @@ const Beneficiaire = () => {
       console.error('Error fetching beneficiaires:', error);
     }
   };
+  
 
   const handleSearch = async () => {
-    if (searchInputNom === '' && searchInputPrenom === '' && searchInputMatricule === '') {
+    if (searchInputNom === ''
+     && searchInputPrenom === '' &&
+      searchInputMatricule === ''&& 
+      searchInputCentreCout === '' &&
+    searchInputDirection === '' &&
+    searchInputStatutBeneficiaire === '') {
       fetchBeneficiaires();
       return;
     }
+    
     try {
       const response = await axios.post('http://localhost:8089/Beneficiaire/multi',{
         nom: searchInputNom,
         prenom: searchInputPrenom,
-        matricule: searchInputMatricule
+        matricule: searchInputMatricule,
+        centreCout: searchInputCentreCout,
+        rfDirection: searchInputDirection,
+        rfBeneficiaire: searchInputStatutBeneficiaire
       }).then((response) => {
+        console.log(response)
       setRows(response.data);
       return response.data})
     } catch (error) {
@@ -66,11 +82,64 @@ const Beneficiaire = () => {
   const handleInputChangeMatricule = (e) => {
     setSearchInputMatricule(e.target.value);
   };
+  const handleInputChangeCentreCout = (e) => {
+    setSearchInputCentreCout(e.target.value);
+  };
   
+  const handleInputChangeDirection = (e) => {
+    setSearchInputDirection(e.target.value);
+  };
+  
+  const handleInputChangeStatutBeneficiaire = (e) => {
+    setSearchInputStatutBeneficiaire(e.target.value);
+  };
+  
+  useEffect(() => {
+    const fetchCentreCout = async () => {
+      try {
+        const response = await axios.get('http://localhost:8089/centreCouts');
+        setCentreCout(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des centres de coût :', error);
+      }
+    };
+  
+    fetchCentreCout();
+  }, []);
+  const [rfDirections, setRfDirections] = useState([]);
+  const [rfBeneficiaires, setRfBeneficiaires] = useState([]);
+  const [centreeCout, setCentreCout] = useState([]);
+
+  useEffect(() => {
+    const fetchRfBeneficiaires = async () => {
+      try {
+        const response = await axios.get('http://localhost:8089/rfbeneficiaires');
+        setRfBeneficiaires(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des RfBeneficiaires :', error);
+      }
+    };
+
+    fetchRfBeneficiaires();
+  }, []);
+
   
 
+  useEffect(() => {
+    const fetchRfDirections = async () => {
+      try { 
+        const response = await axios.get('http://localhost:8089/rfdirections');
+        setRfDirections(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des RfDirections :', error);
+      }
+    };
+
+    fetchRfDirections();
+  }, []);
+
   const columns = [
-    
+    { field: 'id', headerName: 'ID', width: 130 },
     { field: 'nom', headerName: 'Nom', width: 130 },
     { field: 'prenom', headerName: 'Prénom', width: 130 },
     { field: 'matricule', headerName: 'Matricule', width: 130 },
@@ -148,30 +217,60 @@ const Beneficiaire = () => {
               <TextField
                 label="Centre de cout"
                 variant="outlined"
-                value={searchInputMatricule}
-                onChange={handleInputChangeMatricule}
-                placeholder="Rechercher par matricule"
+                value={searchInputCentreCout}
+                onChange={handleInputChangeCentreCout}
+                placeholder="Rechercher par CentreCout"
                 fullWidth
                 select
-              />
-              <TextField
-                label="Direction"
-                variant="outlined"
-                value={searchInputMatricule}
-                onChange={handleInputChangeMatricule}
-                placeholder="Rechercher par matricule"
-                fullWidth
-                select
-              />
+                >
+                {centreeCout.map((centreCout) => (
+                    <MenuItem key={centreCout.id} value={centreCout.id}>
+                    {centreCout.centreCout}
+                    </MenuItem>
+                ))}
+                </TextField>
+                <TextField
+   label="Direction"
+   variant="outlined"
+   value={searchInputDirection}
+   onChange={handleInputChangeDirection}
+   placeholder="Rechercher par Direction"
+   fullWidth
+   select
+   InputProps={{
+      endAdornment: (
+         <InputAdornment position="end">
+            {searchInputDirection && (
+               <IconButton onClick={() => handleInputChangeDirection('')}>
+                  <CancelIcon />
+               </IconButton>
+            )}
+         </InputAdornment>
+      )
+   }}
+>
+   {rfDirections.map((rfDirection) => (
+      <MenuItem key={rfDirection.id} value={rfDirection.id}>
+         {rfDirection.nomDirection}
+      </MenuItem>
+   ))}
+</TextField>
               <TextField
                 label="Statut du bénéficiaire"
                 variant="outlined"
-                value={searchInputMatricule}
-                onChange={handleInputChangeMatricule}
-                placeholder="Rechercher par matricule"
+                value={searchInputStatutBeneficiaire}
+                onChange={handleInputChangeStatutBeneficiaire}
+                placeholder="Rechercher par StatutBeneficiaire"
                 fullWidth
                 select
-              />
+
+                >
+                {rfBeneficiaires.map((rfBeneficiaire) => (
+                  <MenuItem key={rfBeneficiaire.id} value={rfBeneficiaire.id}>
+                    {rfBeneficiaire.statutBeneficiaire}
+                  </MenuItem>
+                ))}
+              </TextField>
                 <Button
                   variant="contained"
                   startIcon={<SearchIcon />}
@@ -195,7 +294,7 @@ const Beneficiaire = () => {
           variant="contained"
           startIcon={<AddIcon />}
           component={Link}
-          to="/AddBeneficiaire"
+          to="/addBeneficiaire"
         >
           Ajouter
         </Button>

@@ -244,15 +244,13 @@ export default function SideBar() {
           ))}
         </List>
       </Drawer>
-          <Container component="main"
-            sx={{ 
-              width: `calc(100% - ${drawerWidth}px)`, 
-              ml: `${0}px`, 
-              mt: '96px',
-              mr: '32px',
-              borderRadius: '8px', 
-              backgroundColor: '#F5F5F5',
-              boxShadow: 0}}>
+          <Container component="main" style={{  
+   borderRadius: '8px',
+   backgroundColor: '#F5F5F5',
+   boxShadow: '0',
+   marginTop: '96px', 
+}}
+            >
             <Content/>
         </Container>
     </Box>
