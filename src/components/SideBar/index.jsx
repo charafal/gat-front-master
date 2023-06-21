@@ -97,8 +97,17 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
       ...closedMixin(theme),
       '& .MuiDrawer-paper': closedMixin(theme),
     }),
+    [theme.breakpoints.down('sm')]: {
+      width: drawerWidth,
+      '& .MuiDrawer-paper': {
+        width: drawerWidth,
+        overflowX: 'hidden',
+      },
+    },
   }),
 );
+
+
 
 export default function SideBar() {
   const theme = useTheme();
@@ -245,12 +254,14 @@ export default function SideBar() {
         </List>
       </Drawer>
           <Container component="main" style={{  
-   borderRadius: '8px',
-   backgroundColor: '#F5F5F5',
-   boxShadow: '0',
-   marginTop: '96px', 
+
 }}
-            >
+sx={{
+  borderRadius: '8px',
+  backgroundColor: '#F5F5F5',
+  boxShadow: '0',
+  marginTop: '96px' 
+  }}    >
             <Content/>
         </Container>
     </Box>
